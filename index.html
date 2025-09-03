@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hi, How Are You? - 30MFF</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="film-player-container">
+        <div class="background-image">
+            <img src="./background.jpg">
+        </div>
+        <nav class="main-nav">
+            <div class="film-title">HI, HOW ARE YOU?</div>
+            <div class="nav-links">
+                <a href="#">#1</a>
+                <a href="#">#2</a>
+                <a href="#">#3</a>
+                <a href="#">#4</a>
+            </div>
+            <button class="about-button">ABOUT</button>
+        </nav>
+        <video class="film-video" >
+            <source src="./film.mp4"  type="video/mp4">
+        </video>
+        <div class="play-pause-button-container">
+            <button class="toggle-play-pause" aria-label="Play" title="Play" type="button">
+                <svg class="icon icon-play" viewBox="0 0 24 24" aria-hidden="true">
+                    <polygon points="8,5 19,12 8,19"></polygon>
+                </svg>
+            </button>
+        </div>
+        <div class="audio-control"> 
+            <input class="audio-slider" type="range" min="0" max="1" step="0.01" value="0.5">
+        </div>
+        <div class="playback-control">
+            <input class="playback-slider" type="range" min="0.1" max="10" step="0.1" value="1.0">
+        </div>
+        <div class="progress-bar-background">
+            <div class="progress-bar"></div>
+        </div>
+        <div class="about-overlay">
+            <div class="about-content">
+                <h2>ABOUT</h2>
+                <div class="about-wrapper">
+                    <div class="about-description">
+                        <p>Film description here, should be a paragraph</p>
+                    </div>
+                    <div class="about-credits">
+                        <h3>CREDITS</h3>
+                        <p>Director: John Doe</p>
+                        <p>Producer: Jane Doe</p>
+                        <p>Actress: John Doe</p>
+                        <p>Editor: Jane Doe</p>
+                        <p>Camera: John Doe</p>
+                        <p>Sound: Jane Doe</p>
+                        <p>Color: John Doe</p>
+                    </div>
+                </div>
+                <div class="about-links">
+                    <p>Likn to author's website</p>
+                </div>
+            </div>
+            <button class="about-close">X</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
