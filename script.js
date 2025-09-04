@@ -1,10 +1,18 @@
+// DOM Elements
 const filmVideo = document.querySelector('.film-video');
 const filmPlayerContainer = document.querySelector('.film-player-container');
 const playPauseButtonContainer = document.querySelector('.play-pause-button-container');
 const playPauseButton = document.querySelector('.toggle-play-pause');
-
 const loopCounter = document.querySelector('.loop-counter');
+const audioSlider = document.querySelector('.audio-slider');
+const navLinks = document.querySelectorAll('.nav-links a');
+const progressBar = document.querySelector('.progress-bar');
+const aboutOverlay = document.querySelector('.about-overlay');
+const aboutButton = document.querySelector('.about-button');
+const aboutCloseButton = document.querySelector('.about-close');
+const playbackSlider = document.querySelector('.playback-slider');
 
+// SVG Icons
 const PLAY_ICON_SVG = `
   <svg class="icon icon-play" viewBox="0 0 24 24" aria-hidden="true">
     <polygon points="8,5 19,12 8,19"></polygon>
@@ -17,11 +25,31 @@ const PAUSE_ICON_SVG = `
   </svg>
 `;
 
+// Config
+const loopThreshold = 1;
+const loopSegments = [
+    { start: 0, end: 5, loopCount: 0 },   
+    { start: 6, end: 10, loopCount: 0 }, 
+    { start: 11, end: 15, loopCount: 0 },
+    { start: 16, end: 20, loopCount: 0 } 
+];
+const endingLoopThreshold = 10;
+
+// States
+let currentLoopStart = loopSegments[0].start;
+let currentLoopEnd = loopSegments[0].end;
+let currentLoopIndex = 0;
+let totalLoopCount = loopSegments[0].loopCount;
+let animationFrameId = null;
+// Manual baseline speed set by the user via the slider
+let manualBaseSpeed = parseFloat(playbackSlider.value);
+// Track if user is currently dragging the playback slider
+let isAdjustingPlaybackSlider = false;
+
 // Initialize button with Play icon
 playPauseButton.innerHTML = PLAY_ICON_SVG;
 playPauseButton.setAttribute('aria-label', 'Play');
 playPauseButton.setAttribute('title', 'Play');
-
 playPauseButtonContainer.classList.add('visible');
 
 playPauseButton.addEventListener('click', () => {
@@ -75,27 +103,11 @@ function togglePlayPause() {
     }
 }
 
-const audioSlider = document.querySelector('.audio-slider');
-
 filmVideo.volume = audioSlider.value;
 
 audioSlider.addEventListener('input', () => {
     filmVideo.volume = audioSlider.value;
 });
-
-const loopThreshold = 1;
-const loopSegments = [
-    { start: 0, end: 5, loopCount: 0 },   
-    { start: 6, end: 10, loopCount: 0 }, 
-    { start: 11, end: 15, loopCount: 0 },
-    { start: 16, end: 20, loopCount: 0 } 
-];
-const endingLoopThreshold = 10;
-
-let currentLoopStart = loopSegments[0].start;
-let currentLoopEnd = loopSegments[0].end;
-let currentLoopIndex = 0;
-let totalLoopCount = loopSegments[0].loopCount;
 
 filmVideo.currentTime = currentLoopStart; 
 
@@ -150,8 +162,6 @@ function resetPlayer() {
     loopCounter.textContent = `Loop No. ${currentLoopIndex + 1}, Time ${loopSegments[currentLoopIndex].loopCount + 1}`;
 }
 
-const navLinks = document.querySelectorAll('.nav-links a');
-
 navLinks.forEach((link, index) => {
     link.addEventListener('click', (event) => {
         event.preventDefault();
@@ -169,10 +179,6 @@ navLinks.forEach((link, index) => {
         loopCounter.textContent = `Loop No. ${currentLoopIndex + 1}, Time ${loopSegments[currentLoopIndex].loopCount + 1}`;
     })
 });
-
-const progressBar = document.querySelector('.progress-bar');
-
-let animationFrameId = null;
 
 function updateProgressBar() {
     if (!filmVideo.paused) {
@@ -195,10 +201,6 @@ function updateProgressBar() {
     }
 }
 
-const aboutOverlay = document.querySelector('.about-overlay');
-const aboutButton = document.querySelector('.about-button');
-const aboutCloseButton = document.querySelector('.about-close');
-
 aboutButton.addEventListener('click', () => {
     aboutOverlay.classList.toggle('visible');
 });
@@ -206,13 +208,6 @@ aboutButton.addEventListener('click', () => {
 aboutCloseButton.addEventListener('click', () => {
     aboutOverlay.classList.toggle('visible');
 });
-
-
-const playbackSlider = document.querySelector('.playback-slider');
-// Manual baseline speed set by the user via the slider
-let manualBaseSpeed = parseFloat(playbackSlider.value);
-// Track if user is currently dragging the playback slider
-let isAdjustingPlaybackSlider = false;
 
 // Start of manual adjust
 playbackSlider.addEventListener('pointerdown', () => {
