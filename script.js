@@ -134,7 +134,11 @@ filmVideo.addEventListener('timeupdate', () => {
                 currentLoopEnd = loopSegments[loopSegments.length - 1].end;
             } else {
                 if (loopSegments[currentLoopIndex].loopCount >= Math.floor((loopThreshold + Math.random() * 2))) {
-                    currentLoopIndex = Math.floor(Math.random() * (loopSegments.length - 1));
+                    let nextIndex;
+                    do {
+                        nextIndex = Math.floor(Math.random() * (loopSegments.length - 1)); 
+                    } while (nextIndex === currentLoopIndex);
+                    currentLoopIndex = nextIndex;
         
                     currentLoopStart = loopSegments[currentLoopIndex].start;
                     currentLoopEnd = loopSegments[currentLoopIndex].end;
@@ -249,6 +253,11 @@ function computeAutoBonus(loopCount) {
 }
 
 function updateCombinedPlaybackSpeed() {
+    if (currentLoopIndex === loopSegments.length - 1) {
+        applyPlaybackRate(1);
+        return;
+    }
+
 	const finalSpeed = manualBaseSpeed + computeAutoBonus(totalLoopCount);
 	applyPlaybackRate(finalSpeed);
 }
