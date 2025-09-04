@@ -28,12 +28,13 @@ const PAUSE_ICON_SVG = `
 // Config
 const loopThreshold = 1;
 const loopSegments = [
-    { start: 0, end: 5, loopCount: 0 },   
-    { start: 6, end: 10, loopCount: 0 }, 
-    { start: 11, end: 15, loopCount: 0 },
-    { start: 16, end: 20, loopCount: 0 } 
+    { start: 0, end: 13, loopCount: 0 },   
+    { start: 14, end: 24, loopCount: 0 }, 
+    { start: 24, end: 29, loopCount: 0 },
+    { start: 28, end: 38, loopCount: 0 },
+    { start: 39, end: 70, loopCount: 0 }  
 ];
-const endingLoopThreshold = 10;
+const endingLoopThreshold = 9;
 
 // States
 let currentLoopStart = loopSegments[0].start;
@@ -116,6 +117,7 @@ filmVideo.addEventListener('timeupdate', () => {
     if (!filmVideo.paused && filmVideo.currentTime >= currentLoopEnd) {
         if (currentLoopIndex === loopSegments.length - 1) {
             filmVideo.currentTime = currentLoopEnd; // Freeze on the last segment last frame
+            applyPlaybackRate(1);
             return;
         } else {
             totalLoopCount++;
@@ -131,7 +133,7 @@ filmVideo.addEventListener('timeupdate', () => {
                 currentLoopStart = loopSegments[loopSegments.length - 1].start;
                 currentLoopEnd = loopSegments[loopSegments.length - 1].end;
             } else {
-                if (loopSegments[currentLoopIndex].loopCount >= Math.floor((loopThreshold + Math.random() * 3))) {
+                if (loopSegments[currentLoopIndex].loopCount >= Math.floor((loopThreshold + Math.random() * 2))) {
                     currentLoopIndex = Math.floor(Math.random() * (loopSegments.length - 1));
         
                     currentLoopStart = loopSegments[currentLoopIndex].start;
@@ -146,6 +148,7 @@ filmVideo.addEventListener('timeupdate', () => {
         loopCounter.textContent = `Loop No. ${currentLoopIndex + 1}, Time ${loopSegments[currentLoopIndex].loopCount + 1}`;
     } else if (filmVideo.paused && currentLoopIndex === loopSegments.length - 1) {
         resetPlayer();
+        applyPlaybackRate(1);
     }
 });
 
