@@ -34,7 +34,7 @@ const loopSegments = [
     { start: 29, end: 38, loopCount: 0 },
     { start: 39, end: 70, loopCount: 0 }  
 ];
-const endingLoopThreshold = 9;
+const endingLoopThreshold = 12;
 
 // States
 let currentLoopStart = loopSegments[0].start;
@@ -246,7 +246,7 @@ function applyPlaybackRate(newRate) {
 
 // How much bonus speed we add based on loop count (linear up to a cap)
 function computeAutoBonus(loopCount) {
-	const AUTO_MAX_BONUS = 2.0;          
+	const AUTO_MAX_BONUS = 3.0;          
 	const AUTO_APEX_AT = endingLoopThreshold; // reach the cap by the threshold loops
 	const normalized = Math.min(loopCount, AUTO_APEX_AT) / AUTO_APEX_AT;
 	return AUTO_MAX_BONUS * normalized;
