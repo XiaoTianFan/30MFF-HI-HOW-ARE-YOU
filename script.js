@@ -114,7 +114,7 @@ filmVideo.currentTime = currentLoopStart;
 filmVideo.addEventListener('timeupdate', () => {
     // Check if the video is playing and if current time has passed the loop end point
     if (!filmVideo.paused && filmVideo.currentTime >= currentLoopEnd) {
-        if (currentLoopIndex == loopSegments.length - 1) {
+        if (currentLoopIndex === loopSegments.length - 1) {
             filmVideo.currentTime = currentLoopEnd; // Freeze on the last segment last frame
             return;
         } else {
@@ -144,7 +144,7 @@ filmVideo.addEventListener('timeupdate', () => {
         }
 
         loopCounter.textContent = `Loop No. ${currentLoopIndex + 1}, Time ${loopSegments[currentLoopIndex].loopCount + 1}`;
-    } else if (filmVideo.paused && currentLoopIndex == loopSegments.length - 1) {
+    } else if (filmVideo.paused && currentLoopIndex === loopSegments.length - 1) {
         resetPlayer();
     }
 });

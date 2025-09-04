@@ -1,4 +1,4 @@
-### HI, HOW ARE YOU?
+## HI, HOW ARE YOU?
 
 A short film about time, repetition, and memory, shot within 30 minutes.
 This player is part of the work—not a wrapper around it. It treats viewing as an act of co‑composition: the film loops, the interface listens, and the audience shapes tempo.
