@@ -31,7 +31,7 @@ const loopSegments = [
     { start: 0, end: 13, loopCount: 0 },   
     { start: 14, end: 24, loopCount: 0 }, 
     { start: 24, end: 29, loopCount: 0 },
-    { start: 28, end: 38, loopCount: 0 },
+    { start: 29, end: 38, loopCount: 0 },
     { start: 39, end: 70, loopCount: 0 }  
 ];
 const endingLoopThreshold = 9;
