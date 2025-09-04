@@ -131,7 +131,7 @@ filmVideo.addEventListener('timeupdate', () => {
             filmVideo.currentTime = currentLoopStart; // Jump back to the loop start point    
         }
 
-        loopCounter.textContent = `Loop No. ${currentLoopIndex}, Time ${loopSegments[currentLoopIndex].loopCount + 1}`;
+        loopCounter.textContent = `Loop No. ${currentLoopIndex + 1}, Time ${loopSegments[currentLoopIndex].loopCount + 1}`;
     } else if (filmVideo.paused && currentLoopIndex == loopSegments.length - 1) {
         resetPlayer();
     }
@@ -147,7 +147,7 @@ function resetPlayer() {
     filmVideo.currentTime = currentLoopStart; 
     updateCombinedPlaybackSpeed();
 
-    loopCounter.textContent = `Loop No. ${currentLoopIndex}, Time ${loopSegments[currentLoopIndex].loopCount + 1}`;
+    loopCounter.textContent = `Loop No. ${currentLoopIndex + 1}, Time ${loopSegments[currentLoopIndex].loopCount + 1}`;
 }
 
 const navLinks = document.querySelectorAll('.nav-links a');
@@ -155,7 +155,7 @@ const navLinks = document.querySelectorAll('.nav-links a');
 navLinks.forEach((link, index) => {
     link.addEventListener('click', (event) => {
         event.preventDefault();
-
+        
         currentLoopStart = loopSegments[index].start;
         currentLoopEnd = loopSegments[index].end;
         currentLoopIndex = index;
@@ -163,8 +163,10 @@ navLinks.forEach((link, index) => {
         console.log(currentLoopStart, currentLoopEnd);
 
         filmVideo.currentTime = currentLoopStart;
+        updateCombinedPlaybackSpeed();
         filmVideo.play();
 
+        loopCounter.textContent = `Loop No. ${currentLoopIndex + 1}, Time ${loopSegments[currentLoopIndex].loopCount + 1}`;
     })
 });
 
