@@ -30,6 +30,13 @@ The player offers control but resists total mastery. You can steer speed and cho
 
 ## Gratitude
 
-Made for ComLab. With thanks to the people who asked the question and stayed to listen.
+Made for ComLab. With thanks to the people who asked the question and stayed to watch.
 
 ## CREDITS
+Director: Xiaotian Fan
+Writer: Izza Tirmizi
+Actress: Izza Tirmizi, Mikaela Jonbenet Marino
+Editor: Xiaotian Fan
+Camera: Xiaotian Fan
+Sound: Xiaotian Fan
+Color: Xiaotian Fan

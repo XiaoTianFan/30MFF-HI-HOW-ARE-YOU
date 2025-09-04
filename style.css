@@ -7,7 +7,7 @@ body {
     align-items: center;
     min-height: 100vh;
     min-width: 100vw;
-    font-family: 'Geist Mono';
+    font-family: 'Geist Mono', Arial, sans-serif;
     color: white;
     overflow: hidden;
 }
@@ -62,7 +62,7 @@ body {
 }
 
 .film-title {
-    font-size: 18px;
+    font-size: 1.5rem;
     font-weight: semibold;
     font-family: monospace;
 }
@@ -70,7 +70,7 @@ body {
 .nav-links {
     display: flex;
     gap: 0 40px;
-    font-size: 0.9em;
+    font-size: 0.9rem;
 }
 
 .nav-links a:hover {
@@ -87,6 +87,7 @@ body {
     border: none;
     color: white;
     cursor: pointer;
+    font-size: 1rem;
 }
 
 .about-button:hover {
@@ -236,7 +237,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.75);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -255,7 +256,6 @@ body {
     position: relative;
     width: 80%;
     height: 80%;
-    background-color: rgba(255, 255, 255, 0.2);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -264,10 +264,12 @@ body {
 
 .about-content h2 {
     margin-top: 0;
+    margin-bottom: 30px;
     color: #00bcd4;
+    font-size: 2rem;
 }
 
-.about-wrapper {
+.about-wrapper-row {
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -284,6 +286,10 @@ body {
     overflow-wrap: break-word;
 }
 
+.about-description p {
+    text-align: right;
+}
+
 .about-credits {
     width: 50%;
     padding: 20px;
@@ -298,13 +304,38 @@ body {
     font-size: 0.9em;
 }
 
-.about-links a:hover {
-    color: #00bcd4;
+.about-description {
+    padding: 20px;
+}
+
+.about-description p{
+    padding: 10px;
+}
+
+.about-wrapper-column-1 {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    justify-content: center;
+    align-items: left;
+    padding: 20px;
+}
+
+.about-credits {
+    padding: 10px;
+}
+
+.about-links {
+    padding: 10px;
 }
 
 .about-links a {
     color: white;
     text-decoration: none;
+}
+
+.about-links a:hover {
+    color: #00bcd4;
 }
 
 .about-close {

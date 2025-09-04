@@ -44,6 +44,7 @@ filmVideo.addEventListener('play', () => {
 });
 
 filmVideo.addEventListener('pause', () => {
+    filmVideo.classList.remove('pseudo-fullscreen');
     // Sync icon to Play when video is paused
     playPauseButton.innerHTML = PLAY_ICON_SVG;
     playPauseButton.setAttribute('aria-label', 'Play');
