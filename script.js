@@ -97,30 +97,35 @@ filmVideo.currentTime = currentLoopStart;
 filmVideo.addEventListener('timeupdate', () => {
     // Check if the video is playing and if current time has passed the loop end point
     if (!filmVideo.paused && filmVideo.currentTime >= currentLoopEnd) {
-        totalLoopCount++;
-        loopSegments[currentLoopIndex].loopCount++;
-
-        console.log('Total Loop Played:', totalLoopCount, 
-            'Current Loop Index:', currentLoopIndex, 
-            'Current Loop Played:', loopSegments[currentLoopIndex].loopCount,
-            'Current Loop Speed:', filmVideo.playbackRate,);
-        
-        if (totalLoopCount >= endingLoopThreshold) {
-            currentLoopIndex = loopSegments.length - 1;
-            currentLoopStart = loopSegments[loopSegments.length - 1].start;
-            currentLoopEnd = loopSegments[loopSegments.length - 1].end;
+        if (currentLoopIndex == loopSegments.length - 1) {
+            filmVideo.currentTime = currentLoopEnd; // Freeze on the last segment last frame
+            return;
         } else {
-            if (loopSegments[currentLoopIndex].loopCount >= Math.floor((loopThreshold + Math.random() * 3))) {
-                currentLoopIndex = Math.floor(Math.random() * (loopSegments.length - 1));
-    
-                currentLoopStart = loopSegments[currentLoopIndex].start;
-                currentLoopEnd = loopSegments[currentLoopIndex].end;
-            } 
-        }
+            totalLoopCount++;
+            loopSegments[currentLoopIndex].loopCount++;
+
+            console.log('Total Loop Played:', totalLoopCount, 
+                'Current Loop Index:', currentLoopIndex, 
+                'Current Loop Played:', loopSegments[currentLoopIndex].loopCount,
+                'Current Loop Speed:', filmVideo.playbackRate,);
+            
+            if (totalLoopCount >= endingLoopThreshold) {
+                currentLoopIndex = loopSegments.length - 1;
+                currentLoopStart = loopSegments[loopSegments.length - 1].start;
+                currentLoopEnd = loopSegments[loopSegments.length - 1].end;
+            } else {
+                if (loopSegments[currentLoopIndex].loopCount >= Math.floor((loopThreshold + Math.random() * 3))) {
+                    currentLoopIndex = Math.floor(Math.random() * (loopSegments.length - 1));
         
-        updateCombinedPlaybackSpeed();
-        filmVideo.currentTime = currentLoopStart; // Jump back to the loop start point    
-    }
+                    currentLoopStart = loopSegments[currentLoopIndex].start;
+                    currentLoopEnd = loopSegments[currentLoopIndex].end;
+                } 
+            }
+
+            updateCombinedPlaybackSpeed();
+            filmVideo.currentTime = currentLoopStart; // Jump back to the loop start point    
+        } 
+    } 
 });
 
 const navLinks = document.querySelectorAll('.nav-links a');

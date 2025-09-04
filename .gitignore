@@ -4,7 +4,3 @@ node_modules/
 /dist/
 /build/
 
-# Cursor-specific ignores
-.cursor/
-.cursor-history/
-.cursor-session/
