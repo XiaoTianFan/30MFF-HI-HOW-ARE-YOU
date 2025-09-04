@@ -3,6 +3,8 @@ const filmPlayerContainer = document.querySelector('.film-player-container');
 const playPauseButtonContainer = document.querySelector('.play-pause-button-container');
 const playPauseButton = document.querySelector('.toggle-play-pause');
 
+const loopCounter = document.querySelector('.loop-counter');
+
 const PLAY_ICON_SVG = `
   <svg class="icon icon-play" viewBox="0 0 24 24" aria-hidden="true">
     <polygon points="8,5 19,12 8,19"></polygon>
@@ -32,6 +34,7 @@ filmVideo.addEventListener('click', () => {
 
 filmVideo.addEventListener('play', () => {
     filmVideo.classList.add('pseudo-fullscreen');
+    loopCounter.classList.add('visible');
     // Sync icon to Pause when video starts playing 
     playPauseButton.innerHTML = PAUSE_ICON_SVG;
     playPauseButton.setAttribute('aria-label', 'Pause');
@@ -45,6 +48,7 @@ filmVideo.addEventListener('play', () => {
 
 filmVideo.addEventListener('pause', () => {
     filmVideo.classList.remove('pseudo-fullscreen');
+    loopCounter.classList.remove('visible');
     // Sync icon to Play when video is paused
     playPauseButton.innerHTML = PLAY_ICON_SVG;
     playPauseButton.setAttribute('aria-label', 'Play');
@@ -125,9 +129,26 @@ filmVideo.addEventListener('timeupdate', () => {
 
             updateCombinedPlaybackSpeed();
             filmVideo.currentTime = currentLoopStart; // Jump back to the loop start point    
-        } 
-    } 
+        }
+
+        loopCounter.textContent = `Loop No. ${currentLoopIndex}, Time ${loopSegments[currentLoopIndex].loopCount + 1}`;
+    } else if (filmVideo.paused && currentLoopIndex == loopSegments.length - 1) {
+        resetPlayer();
+    }
 });
+
+function resetPlayer() {
+    currentLoopIndex = 0;
+    currentLoopStart = loopSegments[0].start;
+    currentLoopEnd = loopSegments[0].end;
+    totalLoopCount = 0;
+    loopSegments.forEach(segment => segment.loopCount = 0);
+
+    filmVideo.currentTime = currentLoopStart; 
+    updateCombinedPlaybackSpeed();
+
+    loopCounter.textContent = `Loop No. ${currentLoopIndex}, Time ${loopSegments[currentLoopIndex].loopCount + 1}`;
+}
 
 const navLinks = document.querySelectorAll('.nav-links a');
 

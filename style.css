@@ -82,6 +82,22 @@ body {
     text-decoration: none;
 }
 
+.loop-counter {
+    position: absolute;
+    bottom: 30px;
+    align-items: center;
+    font-size: 1.25rem;
+    font-weight: regular;
+    font-family: monospace;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.loop-counter.visible {
+    opacity: 1;
+}
+
 .about-button {
     background-color: transparent;
     border: none;
