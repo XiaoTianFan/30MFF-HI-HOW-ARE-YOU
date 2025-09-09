@@ -28,11 +28,11 @@ const PAUSE_ICON_SVG = `
 // Config
 const loopThreshold = 1;
 const loopSegments = [
-    { start: 0, end: 13, loopCount: 0 },   
-    { start: 14, end: 24, loopCount: 0 }, 
+    { start: 0, end: 13, loopCount: 0 },
+    { start: 14, end: 24, loopCount: 0 },
     { start: 24, end: 29, loopCount: 0 },
     { start: 29, end: 38, loopCount: 0 },
-    { start: 39, end: 70, loopCount: 0 }  
+    { start: 39, end: 70, loopCount: 0 }
 ];
 const endingLoopThreshold = 12;
 
@@ -88,7 +88,7 @@ filmVideo.addEventListener('pause', () => {
         cancelAnimationFrame(animationFrameId);
         animationFrameId = null;
     }
-}); 
+});
 
 function togglePlayPause() {
     if (filmVideo.paused) {
@@ -110,7 +110,7 @@ audioSlider.addEventListener('input', () => {
     filmVideo.volume = audioSlider.value;
 });
 
-filmVideo.currentTime = currentLoopStart; 
+filmVideo.currentTime = currentLoopStart;
 
 filmVideo.addEventListener('timeupdate', () => {
     // Check if the video is playing and if current time has passed the loop end point
@@ -123,11 +123,11 @@ filmVideo.addEventListener('timeupdate', () => {
             totalLoopCount++;
             loopSegments[currentLoopIndex].loopCount++;
 
-            console.log('Total Loop Played:', totalLoopCount, 
-                'Current Loop Index:', currentLoopIndex, 
+            console.log('Total Loop Played:', totalLoopCount,
+                'Current Loop Index:', currentLoopIndex,
                 'Current Loop Played:', loopSegments[currentLoopIndex].loopCount,
                 'Current Loop Speed:', filmVideo.playbackRate,);
-            
+
             if (totalLoopCount >= endingLoopThreshold) {
                 currentLoopIndex = loopSegments.length - 1;
                 currentLoopStart = loopSegments[loopSegments.length - 1].start;
@@ -136,13 +136,13 @@ filmVideo.addEventListener('timeupdate', () => {
                 if (loopSegments[currentLoopIndex].loopCount >= Math.floor((loopThreshold + Math.random() * 2))) {
                     let nextIndex;
                     do {
-                        nextIndex = Math.floor(Math.random() * (loopSegments.length - 1)); 
+                        nextIndex = Math.floor(Math.random() * (loopSegments.length - 1));
                     } while (nextIndex === currentLoopIndex);
                     currentLoopIndex = nextIndex;
-        
+
                     currentLoopStart = loopSegments[currentLoopIndex].start;
                     currentLoopEnd = loopSegments[currentLoopIndex].end;
-                } 
+                }
             }
 
             updateCombinedPlaybackSpeed();
@@ -163,7 +163,7 @@ function resetPlayer() {
     totalLoopCount = 0;
     loopSegments.forEach(segment => segment.loopCount = 0);
 
-    filmVideo.currentTime = currentLoopStart; 
+    filmVideo.currentTime = currentLoopStart;
     updateCombinedPlaybackSpeed();
 
     loopCounter.textContent = `Loop No. ${currentLoopIndex + 1}, Time ${loopSegments[currentLoopIndex].loopCount + 1}`;
@@ -172,7 +172,7 @@ function resetPlayer() {
 navLinks.forEach((link, index) => {
     link.addEventListener('click', (event) => {
         event.preventDefault();
-        
+
         currentLoopStart = loopSegments[index].start;
         currentLoopEnd = loopSegments[index].end;
         currentLoopIndex = index;
@@ -218,38 +218,38 @@ aboutCloseButton.addEventListener('click', () => {
 
 // Start of manual adjust
 playbackSlider.addEventListener('pointerdown', () => {
-	isAdjustingPlaybackSlider = true;
+    isAdjustingPlaybackSlider = true;
 });
 // End of manual adjust (use broad listeners so we always catch it)
 window.addEventListener('pointerup', () => {
-	isAdjustingPlaybackSlider = false;
-	// After releasing, sync the UI once to reflect the current effective speed
-	updateCombinedPlaybackSpeed();
+    isAdjustingPlaybackSlider = false;
+    // After releasing, sync the UI once to reflect the current effective speed
+    updateCombinedPlaybackSpeed();
 });
 window.addEventListener('pointercancel', () => {
-	isAdjustingPlaybackSlider = false;
-	updateCombinedPlaybackSpeed();
+    isAdjustingPlaybackSlider = false;
+    updateCombinedPlaybackSpeed();
 });
 
 function applyPlaybackRate(newRate) {
-	const min = parseFloat(playbackSlider.min);
-	const max = parseFloat(playbackSlider.max);
-	const clamped = Math.max(min, Math.min(max, newRate));
+    const min = parseFloat(playbackSlider.min);
+    const max = parseFloat(playbackSlider.max);
+    const clamped = Math.max(min, Math.min(max, newRate));
 
-	filmVideo.playbackRate = clamped;
+    filmVideo.playbackRate = clamped;
 
-	// Only sync the slider UI when the user is NOT dragging it
-	if (!isAdjustingPlaybackSlider && playbackSlider.value !== String(clamped)) {
-		playbackSlider.value = clamped.toString();
-	}
+    // Only sync the slider UI when the user is NOT dragging it
+    if (!isAdjustingPlaybackSlider && playbackSlider.value !== String(clamped)) {
+        playbackSlider.value = clamped.toString();
+    }
 }
 
 // How much bonus speed we add based on loop count (linear up to a cap)
 function computeAutoBonus(loopCount) {
-	const AUTO_MAX_BONUS = 3.0;          
-	const AUTO_APEX_AT = endingLoopThreshold; // reach the cap by the threshold loops
-	const normalized = Math.min(loopCount, AUTO_APEX_AT) / AUTO_APEX_AT;
-	return AUTO_MAX_BONUS * normalized;
+    const AUTO_MAX_BONUS = 3.0;
+    const AUTO_APEX_AT = endingLoopThreshold; // reach the cap by the threshold loops
+    const normalized = Math.min(loopCount, AUTO_APEX_AT) / AUTO_APEX_AT;
+    return AUTO_MAX_BONUS * normalized;
 }
 
 function updateCombinedPlaybackSpeed() {
@@ -258,14 +258,14 @@ function updateCombinedPlaybackSpeed() {
         return;
     }
 
-	const finalSpeed = manualBaseSpeed + computeAutoBonus(totalLoopCount);
-	applyPlaybackRate(finalSpeed);
+    const finalSpeed = manualBaseSpeed + computeAutoBonus(totalLoopCount);
+    applyPlaybackRate(finalSpeed);
 }
 
 // User drags the slider → update manual baseline, then recompute final
 playbackSlider.addEventListener('input', () => {
-	manualBaseSpeed = parseFloat(playbackSlider.value);
-	updateCombinedPlaybackSpeed();
+    manualBaseSpeed = parseFloat(playbackSlider.value);
+    updateCombinedPlaybackSpeed();
 });
 
 updateCombinedPlaybackSpeed();
