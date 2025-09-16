@@ -15,7 +15,6 @@ const aboutOverlay = document.querySelector('.about-overlay');
 const aboutButton = document.querySelector('.about-button');
 const aboutCloseButton = document.querySelector('.about-close');
 
-
 // SVG Icons
 const PLAY_ICON_SVG = `
   <svg class="icon icon-play" viewBox="0 0 24 24" aria-hidden="true">
@@ -51,12 +50,88 @@ let manualBaseSpeed = parseFloat(playbackSlider.value);
 // Track if user is currently dragging the playback slider
 let isAdjustingPlaybackSlider = false;
 
-// Initialize button with Play icon
-playPauseButton.innerHTML = PLAY_ICON_SVG;
-playPauseButton.setAttribute('aria-label', 'Play');
-playPauseButton.setAttribute('title', 'Play');
-playPauseButtonContainer.classList.add('visible');
+// Functions
+function resetPlayer() {
+    currentLoopIndex = 0;
+    currentLoopStart = loopSegments[0].start;
+    currentLoopEnd = loopSegments[0].end;
+    totalLoopCount = 0;
+    loopSegments.forEach(segment => segment.loopCount = 0);
 
+    filmVideo.currentTime = currentLoopStart;
+    updateCombinedPlaybackSpeed();
+
+    loopCounter.textContent = `Loop No. ${currentLoopIndex + 1}, Time ${loopSegments[currentLoopIndex].loopCount + 1}`;
+}
+
+// Apply a new playback rate, clamped to slider min/max, and sync UI if needed
+function applyPlaybackRate(newRate) {
+    const min = parseFloat(playbackSlider.min);
+    const max = parseFloat(playbackSlider.max);
+    const clamped = Math.max(min, Math.min(max, newRate));
+
+    filmVideo.playbackRate = clamped;
+
+    // Only sync the slider UI when the user is NOT dragging it
+    if (!isAdjustingPlaybackSlider && playbackSlider.value !== String(clamped)) {
+        playbackSlider.value = clamped.toString();
+    }
+}
+
+// How much bonus speed we add based on loop count (linear up to a cap)
+function computeAutoBonus(loopCount) {
+    const AUTO_MAX_BONUS = 3.0;
+    const AUTO_APEX_AT = endingLoopThreshold; // reach the cap by the threshold loops
+    const normalized = Math.min(loopCount, AUTO_APEX_AT) / AUTO_APEX_AT;
+    return AUTO_MAX_BONUS * normalized;
+}
+
+function updateCombinedPlaybackSpeed() {
+    if (currentLoopIndex === loopSegments.length - 1) {
+        applyPlaybackRate(1);
+        return;
+    }
+
+    const finalSpeed = manualBaseSpeed + computeAutoBonus(totalLoopCount);
+    applyPlaybackRate(finalSpeed);
+}
+
+function updateProgressBar() {
+    if (!filmVideo.paused) {
+        const segmentDuration = currentLoopEnd - currentLoopStart;
+        const currentTimeInSegment = filmVideo.currentTime - currentLoopStart;
+
+        // Calculate progress, ensuring it doesn't go below 0 or above 100
+        const progressPercentage = Math.max(0, Math.min(100, (currentTimeInSegment / segmentDuration) * 100));
+
+        progressBar.style.width = `${progressPercentage}%`;
+
+        // Request the next animation frame
+        animationFrameId = requestAnimationFrame(updateProgressBar);
+    } else {
+        // If video is paused, cancel any pending animation frame
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
+    }
+}
+
+function togglePlayPause() {
+    if (filmVideo.paused) {
+        filmVideo.play();
+        playPauseButton.innerHTML = PAUSE_ICON_SVG;
+        playPauseButton.setAttribute('aria-label', 'Pause');
+        playPauseButton.setAttribute('title', 'Pause');
+    } else {
+        filmVideo.pause();
+        playPauseButton.innerHTML = PLAY_ICON_SVG;
+        playPauseButton.setAttribute('aria-label', 'Play');
+        playPauseButton.setAttribute('title', 'Play');
+    }
+}
+
+// Event Listeners
 playPauseButton.addEventListener('click', () => {
     togglePlayPause();
 });
@@ -93,28 +168,6 @@ filmVideo.addEventListener('pause', () => {
         animationFrameId = null;
     }
 });
-
-function togglePlayPause() {
-    if (filmVideo.paused) {
-        filmVideo.play();
-        playPauseButton.innerHTML = PAUSE_ICON_SVG;
-        playPauseButton.setAttribute('aria-label', 'Pause');
-        playPauseButton.setAttribute('title', 'Pause');
-    } else {
-        filmVideo.pause();
-        playPauseButton.innerHTML = PLAY_ICON_SVG;
-        playPauseButton.setAttribute('aria-label', 'Play');
-        playPauseButton.setAttribute('title', 'Play');
-    }
-}
-
-filmVideo.volume = audioSlider.value;
-
-audioSlider.addEventListener('input', () => {
-    filmVideo.volume = audioSlider.value;
-});
-
-filmVideo.currentTime = currentLoopStart;
 
 filmVideo.addEventListener('timeupdate', () => {
     // Check if the video is playing and if current time has passed the loop end point
@@ -160,19 +213,6 @@ filmVideo.addEventListener('timeupdate', () => {
     }
 });
 
-function resetPlayer() {
-    currentLoopIndex = 0;
-    currentLoopStart = loopSegments[0].start;
-    currentLoopEnd = loopSegments[0].end;
-    totalLoopCount = 0;
-    loopSegments.forEach(segment => segment.loopCount = 0);
-
-    filmVideo.currentTime = currentLoopStart;
-    updateCombinedPlaybackSpeed();
-
-    loopCounter.textContent = `Loop No. ${currentLoopIndex + 1}, Time ${loopSegments[currentLoopIndex].loopCount + 1}`;
-}
-
 navLinks.forEach((link, index) => {
     link.addEventListener('click', (event) => {
         event.preventDefault();
@@ -191,33 +231,16 @@ navLinks.forEach((link, index) => {
     })
 });
 
-function updateProgressBar() {
-    if (!filmVideo.paused) {
-        const segmentDuration = currentLoopEnd - currentLoopStart;
-        const currentTimeInSegment = filmVideo.currentTime - currentLoopStart;
-
-        // Calculate progress, ensuring it doesn't go below 0 or above 100
-        const progressPercentage = Math.max(0, Math.min(100, (currentTimeInSegment / segmentDuration) * 100));
-
-        progressBar.style.width = `${progressPercentage}%`;
-
-        // Request the next animation frame
-        animationFrameId = requestAnimationFrame(updateProgressBar);
-    } else {
-        // If video is paused, cancel any pending animation frame
-        if (animationFrameId) {
-            cancelAnimationFrame(animationFrameId);
-            animationFrameId = null;
-        }
-    }
-}
-
 aboutButton.addEventListener('click', () => {
     aboutOverlay.classList.toggle('visible');
 });
 
 aboutCloseButton.addEventListener('click', () => {
     aboutOverlay.classList.toggle('visible');
+});
+
+audioSlider.addEventListener('input', () => {
+    filmVideo.volume = audioSlider.value;
 });
 
 // Start of manual adjust
@@ -234,45 +257,13 @@ window.addEventListener('pointercancel', () => {
     isAdjustingPlaybackSlider = false;
     updateCombinedPlaybackSpeed();
 });
-
-function applyPlaybackRate(newRate) {
-    const min = parseFloat(playbackSlider.min);
-    const max = parseFloat(playbackSlider.max);
-    const clamped = Math.max(min, Math.min(max, newRate));
-
-    filmVideo.playbackRate = clamped;
-
-    // Only sync the slider UI when the user is NOT dragging it
-    if (!isAdjustingPlaybackSlider && playbackSlider.value !== String(clamped)) {
-        playbackSlider.value = clamped.toString();
-    }
-}
-
-// How much bonus speed we add based on loop count (linear up to a cap)
-function computeAutoBonus(loopCount) {
-    const AUTO_MAX_BONUS = 3.0;
-    const AUTO_APEX_AT = endingLoopThreshold; // reach the cap by the threshold loops
-    const normalized = Math.min(loopCount, AUTO_APEX_AT) / AUTO_APEX_AT;
-    return AUTO_MAX_BONUS * normalized;
-}
-
-function updateCombinedPlaybackSpeed() {
-    if (currentLoopIndex === loopSegments.length - 1) {
-        applyPlaybackRate(1);
-        return;
-    }
-
-    const finalSpeed = manualBaseSpeed + computeAutoBonus(totalLoopCount);
-    applyPlaybackRate(finalSpeed);
-}
-
 // User drags the slider → update manual baseline, then recompute final
 playbackSlider.addEventListener('input', () => {
     manualBaseSpeed = parseFloat(playbackSlider.value);
     updateCombinedPlaybackSpeed();
 });
 
-window.addEventListener('DOMContentLoaded',() => {
+window.addEventListener('DOMContentLoaded', () => {
     // toggle visibility of controls and nav for 3 seconds after DOM is ready
     playbackControl.classList.add('visible');
     audioControl.classList.add('visible');
@@ -281,7 +272,17 @@ window.addEventListener('DOMContentLoaded',() => {
         playbackControl.classList.remove('visible');
         audioControl.classList.remove('visible');
         mainNav.classList.remove('visible');
-    }, 3000);
+    }, 2000);
 });
+
+// Initialization
+filmVideo.volume = audioSlider.value;
+filmVideo.currentTime = currentLoopStart;
+
+// Initialize button with Play icon
+playPauseButton.innerHTML = PLAY_ICON_SVG;
+playPauseButton.setAttribute('aria-label', 'Play');
+playPauseButton.setAttribute('title', 'Play');
+playPauseButtonContainer.classList.add('visible');
 
 updateCombinedPlaybackSpeed();
