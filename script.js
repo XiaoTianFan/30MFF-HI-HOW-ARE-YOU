@@ -4,13 +4,17 @@ const filmPlayerContainer = document.querySelector('.film-player-container');
 const playPauseButtonContainer = document.querySelector('.play-pause-button-container');
 const playPauseButton = document.querySelector('.toggle-play-pause');
 const loopCounter = document.querySelector('.loop-counter');
+const playbackSlider = document.querySelector('.playback-slider');
 const audioSlider = document.querySelector('.audio-slider');
+const playbackControl = document.querySelector('.playback-control');
+const audioControl = document.querySelector('.audio-control');
+const mainNav = document.querySelector('.main-nav');
 const navLinks = document.querySelectorAll('.nav-links a');
 const progressBar = document.querySelector('.progress-bar');
 const aboutOverlay = document.querySelector('.about-overlay');
 const aboutButton = document.querySelector('.about-button');
 const aboutCloseButton = document.querySelector('.about-close');
-const playbackSlider = document.querySelector('.playback-slider');
+
 
 // SVG Icons
 const PLAY_ICON_SVG = `
@@ -34,7 +38,7 @@ const loopSegments = [
     { start: 29, end: 38, loopCount: 0 },
     { start: 39, end: 70, loopCount: 0 }
 ];
-const endingLoopThreshold = 12;
+const endingLoopThreshold = 10;
 
 // States
 let currentLoopStart = loopSegments[0].start;
@@ -266,6 +270,18 @@ function updateCombinedPlaybackSpeed() {
 playbackSlider.addEventListener('input', () => {
     manualBaseSpeed = parseFloat(playbackSlider.value);
     updateCombinedPlaybackSpeed();
+});
+
+window.addEventListener('DOMContentLoaded',() => {
+    // toggle visibility of controls and nav for 3 seconds after DOM is ready
+    playbackControl.classList.add('visible');
+    audioControl.classList.add('visible');
+    mainNav.classList.add('visible');
+    setTimeout(() => {
+        playbackControl.classList.remove('visible');
+        audioControl.classList.remove('visible');
+        mainNav.classList.remove('visible');
+    }, 3000);
 });
 
 updateCombinedPlaybackSpeed();

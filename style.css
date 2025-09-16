@@ -57,7 +57,7 @@ body {
     box-sizing: border-box;
 }
 
-.main-nav:hover {
+.main-nav:hover, .main-nav.visible {
     opacity: 1;
 }
 
@@ -192,7 +192,9 @@ body {
 }
 
 .audio-control:hover,
-.playback-control:hover {
+.playback-control:hover,
+.audio-control.visible,
+.playback-control.visible {
     opacity: 0.5;
 }
 
