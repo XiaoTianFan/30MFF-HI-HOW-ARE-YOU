@@ -437,6 +437,7 @@ body {
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
+    z-index: 50;
 }
 
 .easter-egg-back {
