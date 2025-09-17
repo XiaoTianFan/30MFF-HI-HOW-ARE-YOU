@@ -191,6 +191,31 @@ body {
     right: 0;
 }
 
+.audio-icon {
+    position: absolute;
+    top: 50%;
+    left: calc(5vw - 36px);
+    transform: translateY(-50%);
+    color: white;
+    opacity: 0.6;
+}
+
+.audio-icon .icon-speaker {
+    width: 30px;
+    height: 30px;
+    fill: currentColor;
+}
+
+.playback-speed-indicator {
+    position: absolute;
+    top: 50%;
+    right: calc(5vw - 36px);
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+    color: white;
+    opacity: 0.7;
+}
+
 .audio-control:hover,
 .playback-control:hover,
 .audio-control.visible,

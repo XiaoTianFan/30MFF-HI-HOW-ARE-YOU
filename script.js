@@ -14,6 +14,7 @@ const progressBar = document.querySelector('.progress-bar');
 const aboutOverlay = document.querySelector('.about-overlay');
 const aboutButton = document.querySelector('.about-button');
 const aboutCloseButton = document.querySelector('.about-close');
+const playbackSpeedIndicator = document.querySelector('.playback-speed-indicator');
 
 // SVG Icons
 const PLAY_ICON_SVG = `
@@ -33,8 +34,8 @@ const loopThreshold = 1;
 const loopSegments = [
     { start: 0, end: 13, loopCount: 0 },
     { start: 14, end: 24, loopCount: 0 },
-    { start: 24, end: 29, loopCount: 0 },
-    { start: 29, end: 38, loopCount: 0 },
+    { start: 24, end: 29.5, loopCount: 0 },
+    { start: 29.5, end: 38, loopCount: 0 },
     { start: 39, end: 70, loopCount: 0 }
 ];
 const endingLoopThreshold = 10;
@@ -64,6 +65,12 @@ function resetPlayer() {
     loopCounter.textContent = `Loop No. ${currentLoopIndex + 1}, Time ${loopSegments[currentLoopIndex].loopCount + 1}`;
 }
 
+function setSpeedIndicator(value) {
+    if (!playbackSpeedIndicator) return;
+    const rounded = Math.round(value * 10) / 10;
+    playbackSpeedIndicator.textContent = `${rounded}×`;
+}
+
 // Apply a new playback rate, clamped to slider min/max, and sync UI if needed
 function applyPlaybackRate(newRate) {
     const min = parseFloat(playbackSlider.min);
@@ -76,6 +83,7 @@ function applyPlaybackRate(newRate) {
     if (!isAdjustingPlaybackSlider && playbackSlider.value !== String(clamped)) {
         playbackSlider.value = clamped.toString();
     }
+    setSpeedIndicator(clamped);
 }
 
 // How much bonus speed we add based on loop count (linear up to a cap)
@@ -285,4 +293,5 @@ playPauseButton.setAttribute('aria-label', 'Play');
 playPauseButton.setAttribute('title', 'Play');
 playPauseButtonContainer.classList.add('visible');
 
+setSpeedIndicator(parseFloat(playbackSlider.value));
 updateCombinedPlaybackSpeed();

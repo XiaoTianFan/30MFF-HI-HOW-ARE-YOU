@@ -14,46 +14,74 @@ Plain HTML, CSS, JS.
 
 `index.html` elements:
 
-*   `div.film-player-container`: Main film player container, centered.
-*   `nav.main-nav`: Top navigation (title, links, About button).
-*   `<video>`: Film player, border-less, pseudo-fullscreen.
-*   `div`: Play/Pause button container.
-*   `div.audio-control`: Left-side volume control (range input).
-*   `div.playback-control`: Right-side playback speed control (range input).
-*   `div.progress-bar-background`: Bottom fixed progress bar.
-*   `div.about-overlay`: Hidden overlay with About title, Description, Credits, Author link, Close button.
+* `div.film-player-container`: Main film player container, centered.
+* `div.background-image`: Full-viewport background image (dimmed).
+* `nav.main-nav`: Top navigation (title, L1–L4 segment links, About button).
+* `<video.film-video>`: Film player, border-less, pseudo-fullscreen on play.
+* `p.loop-counter`: Displays current loop index and repetition count while playing.
+* `div.play-pause-button-container`: Centered overlay button (show on pause).
+* `div.audio-control`: Left-side volume control (range input).
+* `div.playback-control`: Right-side playback speed control (range input).
+* `div.progress-bar-background` → `div.progress-bar`: Bottom segment-progress indicator.
+* `div.about-overlay`: Overlay with About text, Credits, external author link, subtle `notes` link to Easter Eggs, Close button.
+* Secondary page: `easter-eggs.html` shows hidden clip(s) and a Back link.
 
 ### 3.2. CSS Styling
 
 `style.css` styles:
 
-*   `body`: Black background, flexbox centered.
-*   `.film-player-container`: Flex column, centered.
-*   `video.film-video`: Pseudo-fullscreen on playback (`pseudo-fullscreen` class).
-*   `.main-nav`: Top, initially transparent, fades in on hover.
-*   `.audio-control`, `.playback-control`: Left/right, initially transparent, fades in on hover.
-*   `.progress-bar-background`, `.progress-bar`: Bottom fixed, smooth width transition.
-*   `.about-overlay`: Initially hidden/faded, `visible` class shows with semi-transparent background.
-*   `.play-pause-button-container`: Center, initially `opacity: 0`, `visible` class shows, fades in on hover.
+* `body`: Black background, flexbox centered; `Geist Mono` loaded via Google Fonts.
+* `.film-player-container`: Flex column, centered.
+* `.background-image`: Covers viewport, `object-fit: cover`, dimmed.
+* `video.film-video`: Pseudo-fullscreen on playback (`.pseudo-fullscreen`).
+* `.main-nav`: Initially transparent; becomes opaque on hover or when `.visible` is set.
+* `.audio-control`, `.playback-control`: Initially transparent; fade in on hover/`.visible`.
+* `.loop-counter`: Hidden by default; `.visible` shows while playing.
+* `.progress-bar-background`, `.progress-bar`: Bottom-fixed; smooth width transition for segment progress.
+* `.play-pause-button-container`: Center overlay; shown on pause.
+* `.about-overlay`: Hidden by default; `.visible` shows with semi-transparent backdrop. Two-column layout for description/credits.
+* Easter Eggs page: `.easter-eggs-container`, clips grid, and back link styles.
 
 ### 3.3. JavaScript Interactions
 
 `script.js` interactions:
 
-1.  **Pseudo-fullscreen**: Add `pseudo-fullscreen` class to video on play, hides play/pause button.
-2.  **Video Controls**: `togglePlayPause` function for play/pause. `audioSlider` linked to `filmVideo.volume`. Event listeners for play/pause button and video.
-3.  **UI Fade In/Out**: Navigation bar, audio/playback control panels controlled via CSS `:hover`.
-4.  **Playback Loop**:
-    *   `loopSegments` array: Defines custom loop points (start, end, loopCount).
-    *   `timeupdate` listener: Monitors playback, increments `loopCount`.
-    *   `endingLoopThreshold`: Triggers last segment loop.
-    *   Random `currentLoopIndex` selection (excluding last segment) if `loopCount` exceeded.
-    *   Resets `filmVideo.currentTime` to `currentLoopStart` for looping.
-    *   Navigation links update `currentLoopStart`, `currentLoopEnd`, `currentLoopIndex` for non-linear playback.
-5.  **Progress Bar**: `updateProgressBar` (via `requestAnimationFrame`) calculates/updates `.progress-bar` width based on segment progress.
-6.  **About Overlay**: "About" and "Exit" buttons toggle `visible` class on `.about-overlay`.
-7.  **Random Last Loop**: Logic for last loop entry after a threshold.
+1. **Pseudo-fullscreen**: On play, add `.pseudo-fullscreen` to the video; hide center play button. On pause, revert and show button.
+2. **Video controls**: `togglePlayPause`; volume slider binds to `video.volume`.
+3. **Initial UI reveal**: On `DOMContentLoaded`, temporarily add `.visible` to nav and side panels for ~2s.
+4. **Navigation**: L1–L4 links set the active segment and start playback.
+5. **Playback loop**:
+    * `loopSegments`: segment {start, end, loopCount} list.
+    * On `timeupdate`, when reaching segment end: increment counters and either jump to another non-final segment or, after a threshold, enter the last segment.
+    * In the final segment, freeze at the end frame; if paused there, reset to the first segment.
+6. **Playback speed algorithm**: Effective speed = manual slider base + auto bonus. Auto bonus scales linearly with total loops up to a cap, and the applied rate is clamped to slider min/max.
+7. **Progress bar**: Updated via `requestAnimationFrame`; tracks progress within the current segment (not the full film).
+8. **About overlay**: About and Close toggle `.visible`. Contains a subtle link to `easter-eggs.html`.
+9. **Accessibility**: Play/pause button updates `aria-label`/`title`; SVG icon syncs to state.
 
-## 4. Disclaimer
+## 4. Pages & Assets
+
+### 4.1. Pages
+
+* `index.html`: Main film player.
+* `easter-eggs.html`: Hidden page linked from About; shows bonus clip(s) and Back link.
+
+### 4.2. Assets & Fonts
+
+* `assets/film.mp4`
+* `assets/background.jpg`
+* `assets/easter-clip.mp4`
+* Font: Google Fonts `Geist Mono`
+
+## 5. Configuration (current values)
+
+* Segments: `[0–13]`, `[14–24]`, `[24–29]`, `[29–38]`, `[39–70]`
+* `loopThreshold`: 1 (min loops before random switch chance)
+* `endingLoopThreshold`: 10 (enter last segment after this many total loops)
+* Auto bonus cap: +3.0× by 10 loops (linear ramp)
+* Playback slider: min 0.1, max 10, step 0.1, default 1.0
+* Volume slider: min 0, max 1, step 0.01, default 0.5
+
+## 6. Disclaimer
 
 Formatted with Gemini 2.5 Flash.

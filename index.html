@@ -36,9 +36,16 @@
             </button>
         </div>
         <div class="audio-control">
+            <div class="audio-icon" aria-hidden="true" title="Volume">
+                <svg viewBox="0 0 24 24" class="icon icon-speaker" aria-hidden="true">
+                    <polygon points="3,9 7,9 11,5 11,19 7,15 3,15"></polygon>
+                    <path d="M14,9 C15.2,10.2 15.2,13.8 14,15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                </svg>
+            </div>
             <input class="audio-slider" type="range" min="0" max="1" step="0.01" value="0.5">
         </div>
         <div class="playback-control">
+            <span class="playback-speed-indicator" aria-live="polite" aria-atomic="true" title="Speed">1.0×</span>
             <input class="playback-slider" type="range" min="0.1" max="10" step="0.1" value="1.0">
         </div>
         <div class="progress-bar-background">
